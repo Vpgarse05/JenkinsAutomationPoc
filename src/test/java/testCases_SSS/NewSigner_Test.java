@@ -1,0 +1,228 @@
+package testCases_SSS;
+
+import base.BasePage;
+import com.aventstack.extentreports.ExtentTest;
+import helper.RandomUtil;
+import helper.GmailOTPReader;
+import helper.ScreenShot;
+import objectRepo.HomePage;
+import objectRepo.LoginPage;
+import objectRepo.MaintainacePage;
+import objectRepo.NewSignerPage;
+import org.testng.annotations.Test;
+import properties.PropertiesUtils;
+import properties.PropertyFileEnum;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.security.GeneralSecurityException;
+
+public class NewSigner_Test extends BasePage {
+    GmailOTPReader gmailotpreader = new GmailOTPReader();
+    String pathFile = "./documents/Back-End Developer.pdf";
+    String orderNumber, clientNumber, signerName, signerMiddleName, signerLastName, signerEmail, street, city, zipCode, state, cellNumber, lender;
+    private static final String Test1 = "Login to the application";
+    private static final String Test2 = "To add notification to maintenance";
+    private static final String Test3 = "To add new closing package";
+
+    @Test(priority = 0, description = Test1)
+    public void sssLogin(Method method) throws GeneralSecurityException, IOException, InterruptedException {
+        test = extent.createTest(Test1);
+        //test = ExtentManager.startTest(method.getName(), Test1);
+        String email = PropertiesUtils.getProperty(PropertyFileEnum.TESTDATA, "email");
+        String password = PropertiesUtils.getProperty(PropertyFileEnum.TESTDATA, "password");
+        LoginPage login = new LoginPage();
+        login.EnterLoginEmail(email);
+       // String base64Screenshot = ScreenShot.captureScreenshot(driver);
+        //test.addScreenCaptureFromBase64String(base64Screenshot, "Failure Screenshot at " + timestamp);
+        logScreenshot("Entered Login email id :",getScreenshot());
+        test.pass("Login Email Entered Successfully !");
+        login.ClickSubmit();
+        logScreenshot("Clicked on submit :",getScreenshot());
+        test.pass("Clicked on Submit Successfully !");
+        //login.EnterPassword(password);
+        //test.pass("Login Password Enter Successfully !");
+        //login.PressSignInButton();
+        //Thread.sleep(50000);
+        // String mailotp = gmailotpreader.getOTP();
+        // login.EnterOTP(mailotp);
+        // login.SubmitOTP();
+        test.pass("Login Performed Successfully !");
+    }
+
+    @Test(priority = 1, description = Test2)
+    public void performMaintenanceFlow(Method method) throws IOException {
+        test = extent.createTest(Test2);
+        //test = ExtentManager.startTest(method.getName(), Test1);
+        lender = PropertiesUtils.getProperty(PropertyFileEnum.TESTDATA, "lender");
+        HomePage home = new HomePage();
+        home.sleepTime(2);
+        // To wait for code
+        home.ValidateDashboardAtHome();
+        logScreenshot("Dashboard :",getScreenshot());
+        test.pass("User Navigated to Dashboard successfully!");
+        home.ClickProductIcon();
+        test.pass("Clicked on Product icon Successfully !");
+        MaintainacePage main = new MaintainacePage();
+        main.ClickOnMaintenance();
+        test.pass("Clicked on Maintenance link successfully !");
+        main.ClickOnPrivateLabeling();
+        test.pass("Clicked on Private Labeling successfully !");
+        main.waitForSaveSetting();
+        test.pass("Navigated to Setting Page Successfully !");
+        main.SelectOffice(lender);
+        test.pass("Selected Any Lander Successfully !");
+        main.ScrollToEditNotification();
+        main.ClickOnEditNotification();
+        test.pass("Clicked on edit notification successfully !");
+        main.waitForSaveNotification();
+        main.ClickOnAddNotification();
+        test.pass("Clicked on add notification button!");
+        main.SelectEventFromDropdown("Signer_Welcome");
+        test.pass("Added Signer Welcome type mail!");
+        main.SelectTypeFromDropdown("Email");
+        test.pass("Added Signer Welcome Email type");
+        main.ClickOnSaveNotificationEvent();
+        test.pass("Clicked on Save notification button!");
+        main.ClickOnOKPopup();
+        main.ClickOnAddNotification();
+        test.pass("Clicked on add notification button!");
+        main.SelectEventFromDropdown("SignerPIN");
+        test.pass("Added Signer PIN type mail!");
+        main.SelectTypeFromDropdown("Email");
+        test.pass("Added Signer PIN Email type");
+        main.ClickOnSaveNotificationEvent();
+        main.ClickOnOKPopup();
+        test.pass("Clicked on Save notification button!");
+        main.sleepTime(1);
+        main.SaveNotification();
+        test.pass("Clicked on Save All notification button Successfully!");
+        main.VerifySaveSettingMessage();
+        test.pass("Verified Save Setting Success message Successfully !");
+        main.ClickOnOKPopup();
+        test.pass("Clicked on Ok Button popup button successfully!");
+
+    }
+
+    //@Test(priority = 2, description = Test3)
+    public void performAddNewSigner(Method method) throws Exception {
+        test = extent.createTest(Test3);
+        //test = ExtentManager.startTest(method.getName(), Test3);
+        HomePage home = new HomePage();
+        home.sleepTime(2);
+        home.ClickTittleSlider();
+        test.pass("Clicked on Tittle Successfully !");
+        home.ClickNewSignerLink();
+        test.pass("Clicked on New Closing Package Successfully !");
+        NewSignerPage signer = new NewSignerPage();
+        signer.ClickOnNext();
+        test.pass("Clicked on Next Button Successfully !");
+        orderNumber = RandomUtil.generateRandomString(5, RandomUtil.Mode.ALPHA);
+        signer.EnterOrderID(orderNumber);
+        test.pass("Entered Order ID " + orderNumber + " Successfully !");
+        clientNumber = RandomUtil.generateRandomString(5, RandomUtil.Mode.NUMERIC);
+        signer.EnterClientNumber(clientNumber);
+        test.pass("Entered Client Number " + clientNumber + " Successfully !");
+        lender = PropertiesUtils.getProperty(PropertyFileEnum.TESTDATA, "lender");
+        signer.selectLanderFromDropdown(lender);
+        test.pass("Selected Lender " + lender + " Successfully !");
+        street = PropertiesUtils.getProperty(PropertyFileEnum.TESTDATA, "street");
+        signer.EnterStreet(street);
+        test.pass("Entered Street " + street + " Successfully !");
+        city = PropertiesUtils.getProperty(PropertyFileEnum.TESTDATA, "city");
+        signer.EnterCity(city);
+        test.pass("Entered City " + city + " Successfully !");
+        state = PropertiesUtils.getProperty(PropertyFileEnum.TESTDATA, "state");
+        signer.SelectState(state);
+        test.pass("Entered State " + state + " Successfully !");
+        zipCode = PropertiesUtils.getProperty(PropertyFileEnum.TESTDATA, "zipCode");
+        signer.EnterZip(zipCode);
+        test.pass("Entered Zip Code " + zipCode + " Successfully !");
+        signer.ClickOnNext();
+        test.pass("Clicked on Next Button Successfully !");
+        signer.waitForClosingRoomInformationScreen();
+        test.pass("Navigated to Closing Room Information Screen Successfully !");
+        signer.sendNotarySelectFileToUpload(pathFile);
+        test.pass("Uploaded file " + pathFile + " Successfully!");
+        lender = PropertiesUtils.getProperty(PropertyFileEnum.TESTDATA, "lender");
+        signer.SelectOfficeAndValue(lender);
+        test.pass("Selected Lender " + lender + " Successfully !");
+        signer.ClickOnUploadFileButton();
+        test.pass("Clicked on Upload Button Successfully !");
+        signer.ClickOnNext();
+        test.pass("Clicked on Next Button Successfully !");
+        signer.ClickAddSigner();
+        test.pass("Clicked on Add Signer Button Successfully !");
+        signerName = RandomUtil.generateRandomString(5, RandomUtil.Mode.ALPHA);
+        home.sleepTime(2);
+        signer.EnterFirstName(signerName);
+        test.pass("Entered Signer Name " + signerName + " Successfully !");
+        signerMiddleName = RandomUtil.generateRandomString(5, RandomUtil.Mode.ALPHA);
+        signer.EnterMiddleName(signerMiddleName);
+        test.pass("Entered Signer Middle Name " + signerMiddleName + " Successfully !");
+        signerLastName = RandomUtil.generateRandomString(5, RandomUtil.Mode.ALPHA);
+        signer.EnterLastName(signerLastName);
+        test.pass("Entered Signer Lats Name " + signerLastName + " Successfully !");
+        signerEmail = RandomUtil.generateRandomString(5, RandomUtil.Mode.ALPHA);
+        signer.EnterEmail(signerEmail + "@gmail.com");
+        test.pass("Entered Email Id " + signerEmail + "@gmail.com Successfully !");
+        street = PropertiesUtils.getProperty(PropertyFileEnum.TESTDATA, "street");
+        signer.EnterUserStreet(street);
+        test.pass("Entered Street " + street + " Successfully !");
+        city = PropertiesUtils.getProperty(PropertyFileEnum.TESTDATA, "city");
+        signer.EnterUserCity(city);
+        test.pass("Entered City " + city + " Successfully !");
+        zipCode = PropertiesUtils.getProperty(PropertyFileEnum.TESTDATA, "zipCode");
+        signer.EnterZipCode(zipCode);
+        test.pass("Entered Zip Code " + zipCode + " Successfully !");
+        state = PropertiesUtils.getProperty(PropertyFileEnum.TESTDATA, "state");
+        signer.SelectUserState(state);
+        test.pass("Entered State " + state + " Successfully !");
+        cellNumber = PropertiesUtils.getProperty(PropertyFileEnum.TESTDATA, "cellNumber");
+        signer.EnterCellPhone(cellNumber);
+        test.pass("Entered Cell Number " + cellNumber + " Successfully !");
+        signer.ClickOnNext();
+        test.info("Clicked on Next Button Successfully !");
+        home.sleepTime(4);
+        signer.ClickOnSignerCoordinate();
+        test.pass("Clicked on Signer Coordinate tab Successfully !");
+        signer.DragSignToPDF();
+        test.pass("Dragged Sign to PDF Successfully !");
+        signer.ClickOnNext();
+        test.pass("Clicked on Next Button Successfully !");
+        signer.ClickOnAddScheduleIcon();
+        test.pass("Clicked on Add Schedule + icon Button Successfully !");
+        //signer.SelectClosingType("ROC");
+
+        signer.SelectClosingType("InPerson_Hybrid");
+        signer.EnterStreetSchedule("New York");
+        signer.EnterCitySchedule("New York");
+        signer.EnterZipSchedule("10008");
+        signer.SelectStateSchedule("NY");
+
+        test.pass("Selected Closing Type Successfully !");
+        signer.SelectNotaryType("Hari Kadiyala");
+        test.pass("Selected Notary Type Successfully !");
+        signer.SelectSigner();
+        test.pass("Selected Signer Successfully !");
+        //conflict yes button //button[@class='MuiButtonBase-root MuiButton-root MuiButton-text btn btn-primary']//span[text()='Yes']
+        signer.ClickOnOk();
+        test.pass("Clicked on OK Button Successfully !");
+        //signer.HandleConflictPopup();
+        signer.ClickOnNext();
+        test.pass("Clicked on Next Button Successfully !");
+        signer.ClickOnSelectAllNotificationCheckBox();
+        test.pass("Checked on Select All Notification Successfully !");
+        signer.ClickOnNext();
+        test.pass("Clicked on Next Button Successfully !");
+        signer.ClickOnSaveButton();
+        test.pass("Clicked on Save Button Successfully !");
+        signer.ClickYesCreateScheduleButton();
+        test.pass("Clicked on Yes Create Schedule Button Successfully !");
+        signer.ValidateSuccessNotaryMessage("Package Saved Successfully!");
+        test.pass("Verified Success Message Successfully !");
+        signer.ClickOnOk();
+        test.pass("Clicked on OK Successfully !");
+        signer.ClickOnDashBoard();
+        test.info("Clicked on Dashboard tab Successfully !");
+    }
+}
